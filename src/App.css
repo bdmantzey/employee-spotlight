@@ -43,8 +43,8 @@ body {
 
 .card {
   width: 100%;
-  max-width: 1600px;
-  min-height: 900px;
+  max-width: 1080px;
+  min-height: 1920px;
   background: white;
   border-radius: 24px;
   overflow: hidden;
@@ -54,38 +54,41 @@ body {
 
 .card-header {
   background: black;
-  color: rgb(255, 255, 255);
-  padding: 32px;
+  color: white;
+  padding: 40px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 74px;
+  text-align: center;
+  gap: 24px;
 }
 
 .main-title {
   color: #d7ba91;
-  font-size: 72px;
+  font-size: 64px;
   font-weight: bold;
-  margin: 0 0 32px 0;
+  margin: 0 0 20px 0;
   line-height: 1;
+  text-align: center;
 }
 .subtitle {
   color: #d1d5db;
   margin-top: 10px;
-  font-size: 38px;
+  font-size: 28px;
   line-height: 1.4;
 }
 
 .logo {
-  width: 180px;
+  width: 250px;
   background: white;
   padding: 10px;
   border-radius: 12px;
 }
 
 .card-content {
-  display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
-  gap: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
   padding: 50px;
   align-items: center;
 }
@@ -98,8 +101,8 @@ body {
 
 .employee-image {
   width: 100%;
-  max-width: 650px;
-  height: 650px;
+  max-width: 850px;
+  height: 500px;
   object-fit: cover;
   object-position: center;
   border-radius: 24px;
@@ -144,12 +147,11 @@ body {
 }
 
 .employee-name {
-  font-size: 48px;
+  font-size: 72px;
   margin: 20px 0;
   font-weight: bold;
   line-height: 1;
 }
-
 .job-title {
   font-size: 40px;
   color: #a16207;
@@ -157,14 +159,21 @@ body {
 }
 
 .details-list {
-  font-size: 28px;
+  font-size: 24px;
   line-height: 1.8;
   color: #374151;
 }
 
 .details-list strong {
-  font-size: 22px;
+  font-size: 24px;
   color: black;
+}
+.details-list p {
+  margin-bottom: 20px;
+}
+
+.details-section {
+  text-align: center;
 }
 
 .quote-box {
@@ -172,8 +181,16 @@ body {
   border-left: 5px solid #ca8a04;
   padding: 40px;
   border-radius: 16px;
-  margin-top: 32px;
+  margin-top: 40px;
   font-style: italic;
+  font-size: 28px;
+  line-height: 1.5;
+}
+.card-content {
+  padding-bottom: 80px;
+}
+.card {
+  border: 1px solid rgba(0,0,0,0.08);
 }
 
 .footer {

@@ -57,8 +57,8 @@ const [imagePositionY, setImagePositionY] = useState(50);
 
     jsPDF: {
       unit: "px",
-      format: [1920, 1080],
-      orientation: "landscape",
+      format: [1080, 1920],
+orientation: "portrait",
     },
   })
   .from(element)
@@ -151,7 +151,7 @@ const [imagePositionY, setImagePositionY] = useState(50);
                 </>
               )}
             </div>
-            {!previewMode && !isDownloading && employeeImage && (
+            {employeeImage && !previewMode && !isDownloading && (
   <div
     style={{
       width: "100%",
