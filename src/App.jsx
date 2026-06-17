@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 import logo from "./assets/logo.jpg";
-import html2pdf from "html2pdf.js";
+import html2canvas from "html2canvas";
 
 export default function App() {
   const [employeeImage, setEmployeeImage] = useState(null);
@@ -15,15 +15,16 @@ export default function App() {
     "Loves fishing on weekends."
   );
   const [jobAccomplishments, setJobAccomplishments] = useState(
-  "Always goes above and beyond for the team."
-);
+    "Always goes above and beyond for the team."
+  );
   const [quote, setQuote] = useState(
     "MAX Electric feels like family."
   );
   const [imagePositionX, setImagePositionX] = useState(50);
-const [imagePositionY, setImagePositionY] = useState(50);
+  const [imagePositionY, setImagePositionY] = useState(50);
 
   const [previewMode, setPreviewMode] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   // Cleanup uploaded image URL
   useEffect(() => {
@@ -33,39 +34,36 @@ const [imagePositionY, setImagePositionY] = useState(50);
       }
     };
   }, [employeeImage]);
-  const [isDownloading, setIsDownloading] = useState(false);
-  const downloadPDF = async () => {
-  const element = document.getElementById("spotlight-card");
 
-  setIsDownloading(true);
+  // Updated function to capture the card element and export as a crisp JPEG asset
+  const downloadJPEG = async () => {
+    const element = document.getElementById("spotlight-card");
 
-  // Wait for React to hide buttons
-  await new Promise((resolve) =>
-    setTimeout(resolve, 100)
-  );
+    setIsDownloading(true);
 
-  await html2pdf()
-  .set({
-    margin: 0,
-    filename: "employee-spotlight.pdf",
-    image: { type: "jpeg", quality: 1 },
+    // Wait for state change to safely clear browser interaction outlines
+    await new Promise((resolve) =>
+      setTimeout(resolve, 120)
+    );
 
-    html2canvas: {
-      scale: 2,
-      useCORS: true,
-    },
+    try {
+      const canvas = await html2canvas(element, {
+        scale: 2, // Keeps text rendering clear and readable
+        useCORS: true, // Safeguards dynamic image sources
+        backgroundColor: "#ffffff",
+      });
 
-    jsPDF: {
-      unit: "px",
-      format: [1080, 1920],
-orientation: "portrait",
-    },
-  })
-  .from(element)
-  .save();
+      const link = document.createElement("a");
+      link.download = `${employeeName.toLowerCase().replace(/\s+/g, "-")}-spotlight.jpg`;
+      link.href = canvas.toDataURL("image/jpeg", 0.98);
+      link.click();
+    } catch (error) {
+      console.error("Image generation failed:", error);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
-  setIsDownloading(false);
-};
   const handleImageUpload = (file) => {
     if (file) {
       setEmployeeImage(URL.createObjectURL(file));
@@ -98,7 +96,7 @@ orientation: "portrait",
               Employee Spotlight
             </h1>
             <p className="subtitle">
-              Celebrating the people who power MAX Electric
+              Celebrating the people who power Max Electric
             </p>
           </div>
         </header>
@@ -117,13 +115,13 @@ orientation: "portrait",
             >
               {employeeImage ? (
                 <img
-  src={employeeImage}
-  alt={employeeName}
-  className="employee-image"
-  style={{
-    objectPosition: `${imagePositionX}% ${imagePositionY}%`
-  }}
-/>
+                  src={employeeImage}
+                  alt={employeeName}
+                  className="employee-image"
+                  style={{
+                    objectPosition: `${imagePositionX}% ${imagePositionY}%`
+                  }}
+                />
               ) : (
                 <div className="image-placeholder">
                   Drag & Drop Employee Photo
@@ -151,54 +149,51 @@ orientation: "portrait",
                 </>
               )}
             </div>
+
+            {/* Adjustment Sliders */}
             {employeeImage && !previewMode && !isDownloading && (
-  <div
-    style={{
-      width: "100%",
-      marginTop: "20px",
-      display: "flex",
-      flexDirection: "column",
-      gap: "14px",
-    }}
-  >
+              <div
+                style={{
+                  width: "100%",
+                  marginTop: "20px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "14px",
+                }}
+              >
+                <div>
+                  <p>Move Image Left / Right</p>
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={imagePositionX}
+                    onChange={(e) =>
+                      setImagePositionX(e.target.value)
+                    }
+                    style={{ width: "100%" }}
+                  />
+                </div>
 
-    <div>
-      <p>Move Image Left / Right</p>
-
-      <input
-        type="range"
-        min="0"
-        max="100"
-        value={imagePositionX}
-        onChange={(e) =>
-          setImagePositionX(e.target.value)
-        }
-        style={{ width: "100%" }}
-      />
-    </div>
-
-    <div>
-      <p>Move Image Up / Down</p>
-
-      <input
-        type="range"
-        min="0"
-        max="100"
-        value={imagePositionY}
-        onChange={(e) =>
-          setImagePositionY(e.target.value)
-        }
-        style={{ width: "100%" }}
-      />
-    </div>
-
-  </div>
-)}
+                <div>
+                  <p>Move Image Up / Down</p>
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={imagePositionY}
+                    onChange={(e) =>
+                      setImagePositionY(e.target.value)
+                    }
+                    style={{ width: "100%" }}
+                  />
+                </div>
+              </div>
+            )}
 
             {/* Form Section */}
-           {!previewMode && !isDownloading && employeeImage && (
+            {!previewMode && !isDownloading && employeeImage && (
               <div className="form-section">
-
                 <input
                   type="text"
                   placeholder="Employee Name"
@@ -219,7 +214,7 @@ orientation: "portrait",
 
                 <input
                   type="text"
-                  placeholder="Years with MAX Electric"
+                  placeholder="Years with Max Electric"
                   value={years}
                   onChange={(e) =>
                     setYears(e.target.value)
@@ -233,6 +228,7 @@ orientation: "portrait",
                     setFavoritePart(e.target.value)
                   }
                 />
+                
                 <textarea
                   placeholder="Job Accomplishments"
                   value={jobAccomplishments}
@@ -256,7 +252,6 @@ orientation: "portrait",
                     setQuote(e.target.value)
                   }
                 />
-                
               </div>
             )}
           </section>
@@ -278,7 +273,7 @@ orientation: "portrait",
 
             <div className="details-list">
               <p>
-                <strong>Years with MAX Electric:</strong>{" "}
+                <strong>Years with Max Electric:</strong>{" "}
                 {years}
               </p>
 
@@ -286,6 +281,7 @@ orientation: "portrait",
                 <strong>Favorite Part of the Job:</strong>{" "}
                 {favoritePart}
               </p>
+              
               <p>
                 <strong>Job Accomplishments:</strong>{" "}
                 {jobAccomplishments}
@@ -304,34 +300,28 @@ orientation: "portrait",
           </section>
         </main>
 
-        {/* Buttons */}
+        {/* Action Controls Toolbar Block */}
         {!isDownloading && (
-  <div className="button-section">
+          <div className="button-section">
+            <button
+              onClick={() => setPreviewMode(!previewMode)}
+              className="preview-button"
+            >
+              {previewMode ? "Edit Mode" : "Preview Mode"}
+            </button>
 
-    <button
-      onClick={() =>
-        setPreviewMode(!previewMode)
-      }
-      className="preview-button"
-    >
-      {previewMode
-        ? "Edit Mode"
-        : "Preview Mode"}
-    </button>
-
-    <button
-      onClick={downloadPDF}
-      className="download-button"
-    >
-      Download PDF
-    </button>
-
-  </div>
-)}
+            <button
+              onClick={downloadJPEG}
+              className="download-button"
+            >
+              Download JPEG
+            </button>
+          </div>
+        )}
 
         {/* Footer */}
         <footer className="footer">
-          MAX Electric • Employee Recognition Program
+          Max Electric • Employee Recognition Program
         </footer>
 
       </div>
